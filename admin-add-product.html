@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin – Add Product</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      padding: 20px;
+    }
+    .box {
+      max-width: 420px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 12px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>➕ Add New Product</h2>
+
+  <label>Product ID</label>
+  <input id="pid" placeholder="vip1_200">
+
+  <label>Name</label>
+  <input id="name" placeholder="VIP1 Iron Ore">
+
+  <label>Category</label>
+  <select id="category">
+    <option value="welfare">Welfare</option>
+    <option value="welfare-fund">Welfare Fund</option>
+    <option value="innovative">Innovative</option>
+  </select>
+
+  <label>Price (₹)</label>
+  <input id="price" type="number">
+
+  <label>Daily Income (₹)</label>
+  <input id="dailyIncome" type="number">
+
+  <label>Duration (days)</label>
+  <input id="days" type="number">
+
+  <label>Image</label>
+  <input id="image" placeholder="image1.jpeg">
+
+  <label>Status</label>
+  <select id="active">
+    <option value="true">Active</option>
+    <option value="false">Inactive</option>
+  </select>
+
+  <button onclick="addProduct()">Save Product</button>
+</div>
+
+<script type="module">
+import { db } from "../js/firebase.js";
+import { ref, set } from
+"https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+window.addProduct = async function () {
+
+  const pid = document.getElementById("pid").value.trim();
+  const name = document.getElementById("name").value.trim();
+  const category = document.getElementById("category").value;
+  const price = Number(document.getElementById("price").value);
+  const dailyIncome = Number(document.getElementById("dailyIncome").value);
+  const days = Number(document.getElementById("days").value);
+  const image = document.getElementById("image").value.trim();
+  const active =
+    document.getElementById("active").value === "true";
+
+  if (!pid || !name || !price || !dailyIncome || !days) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  await set(ref(db, `products/${pid}`), {
+    name,
+    category,
+    price,
+    dailyIncome,
+    days,
+    image,
+    active,
+    createdAt: Date.now()
+  });
+
+  alert("✅ Product saved successfully");
+
+  document.querySelectorAll("input").forEach(i => i.value = "");
+};
+</script>
+
+</body>
+</html>
